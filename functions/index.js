@@ -6,7 +6,14 @@ admin.initializeApp();
 exports.alertaDeArquiDos = functions.database.ref('/ARQUI/estadoAlarma')
 .onUpdate((snapshot, context) => {
 
-    if(snapshot.after.val()){
+    var estado = snapshot.after.val();
+
+    admin.database().ref('/ARQUI_LOG/alarma/').push({
+        date: new Date().toString(),
+        event: "La alarma se ha " + (estado?"activado.":"desactivado.")
+    });
+
+    if(estado){
 
         var topic = 'alarma-ntf';
 
